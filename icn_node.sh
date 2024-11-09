@@ -93,13 +93,6 @@ stop_session() {
     run_commands_info "screen -r $name -X quit"
 }
 
-start_session_and_run() {
-    local name="$1"
-    local privat_key="$2"
-
-    process_notification "Создаем и запускаем  (Creating and starting)..."
-    run_node_command "screen -dmS $name bash -c \"curl -o- https://console.icn.global/downloads/install/start.sh | bash -s -- -p $privat_key\""
-}
 
 show_orange "      ___        ______ .__   __. " && sleep 0.2
 show_orange "     /   \      /      ||  \ |  | " && sleep 0.2
@@ -152,7 +145,12 @@ while true; do
 
                         stop_session "ICN"
 
-                        start_session_and_run "ICN" "$PRIVATE_KEY"
+                        process_notification "Создаем сессию (Creating session)..."
+                        run_commands "screen -dmS ICN"
+
+                        process_notification "Запускаем (Starting)..."
+                        run_node_command "screen -S ICN -X stuff \"curl -o- https://console.icn.global/downloads/install/start.sh | bash -s -- -p $PRIVATE_KEY $(echo -ne '\r')\""
+
                         echo
                         ;;
                     2)
